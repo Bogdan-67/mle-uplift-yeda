@@ -13,13 +13,13 @@ numpy==1.26.4
 optuna==4.4.0
 pandas==2.2.1
 plotly==5.20.0
-scikit-learn==1.6.1
+scikit-learn==1.7.0
 scikit-uplift==0.5.1
 scipy==1.15.2
 seaborn==0.13.2
 shap==0.45.0
 statsmodels==0.14.1
-xgboost==2.0.3
+xgboost==3.0.2
 psycopg==3.1.12
 psycopg-binary==3.1.12
 psycopg-pool==3.3.0
