@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from sklift.metrics import uplift_by_percentile
+import mlflow
 
 def custom_uplift_by_percentile(y_true, uplift, treatment, 
                                kind='line', bins=10, string_percentiles=True, 
@@ -110,3 +111,27 @@ def custom_uplift_by_percentile(y_true, uplift, treatment,
     # оптимизируем расположение элементов на графике
     plt.tight_layout()
     return fig
+
+
+def get_or_create_run_id(study, experiment_id, name = 'optuna_param_search'):
+    """
+        Функция для получения run_id MLflow из пользовательского поля в бд optuna
+        Если поле не задано, то запускается новый run и записывается в бд
+    """
+    run_id = study.user_attrs.get("mlflow_run_id")
+    
+    if run_id:
+        try:
+            # Проверяем, существует ли запуск и в том ли он эксперименте
+            existing_run = mlflow.get_run(run_id)
+            if existing_run.info.experiment_id == experiment_id:
+                return run_id
+            else:
+                print("Найден run_id от другого эксперимента, создаем новый.")
+        except:
+            print("Run_id не найден в MLflow, создаем новый.")
+    
+    with mlflow.start_run(run_name=name, experiment_id=experiment_id) as run:
+        new_id = run.info.run_id
+        study.set_user_attr("mlflow_run_id", new_id)
+        return new_id
